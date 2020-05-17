@@ -117,7 +117,7 @@
 					<button type="submit" id="btnFinalizar" name="acao" value="btn-finalizar-de-carrinho-jsp" class="btn btn-primary" disabled>Finalizar Compra</button>
 					<button type="submit" id="btnVisualizar" name="acao" value="btn-visualizar-de-carrinho-jsp" class="btn btn-info" disabled>Visualizar</button>
 					<input type="button" class="btn btn-danger" id="btnExcluir" data-toggle="modal" data-target="#delete-modal" value="Excluir" disabled>
-					<a href="index.jsp" class="btn btn-default">Voltar</a>
+					<a href="comprar_filmes.do?acao=menu-comprar-filmes-de-menu-jsp" class="btn btn-default">Voltar</a>
 				</div>
 			</div>
 		</form>
@@ -140,3 +140,5 @@
 	<script src="js/ie10-viewport-bug-workaround.js"></script>
 </body>
 </html>
+
+
