@@ -21,7 +21,7 @@ import ads.pipoca.model.service.FilmeService;
 public class ComprarFilmesController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		String acao = request.getParameter("acao");
@@ -29,17 +29,21 @@ public class ComprarFilmesController extends HttpServlet {
 		String saida = "index.jsp";
 		HttpSession session = request.getSession();
 		ArrayList<Filme> carrinho = null;
-		
-		switch(acao) {
+		String id_filme = null;
+		int idFilme = -1;
+		ArrayList<Integer> listaIds = null;
+		Filme filme = null;
+
+		switch (acao) {
 		case "btn-comprar-de-exibir-filmes-jsp":
 			ArrayList<Integer> lista = obterIds(request);
 			ArrayList<Filme> filmes = fService.listarFilmes(lista);
-			//pegar o carrinho da sessão e ver se já tem filmes
+			// pegar o carrinho da sessão e ver se já tem filmes
 			Object aux = session.getAttribute("filmes");
-			if(aux != null && aux instanceof ArrayList<?>) {
-				carrinho = (ArrayList<Filme>)aux;
+			if (aux != null && aux instanceof ArrayList<?>) {
+				carrinho = (ArrayList<Filme>) aux;
 				if (carrinho.size() > 0) {
-					for(Filme f:filmes) {
+					for (Filme f : filmes) {
 						carrinho.add(f);
 					}
 				} else {
@@ -56,34 +60,48 @@ public class ComprarFilmesController extends HttpServlet {
 			request.setAttribute("filmes", filmes);
 			saida = "ExibirFilmes.jsp";
 			break;
+
+		case "btn-visualizar-de-carrinho-jsp":
+			listaIds = obterIds(request);
+			if (listaIds != null && listaIds.size() > 0) {
+				idFilme = listaIds.get(0);
+			} else {
+				idFilme = -1;
+			}
+
+			filme = fService.buscarFilme(idFilme);
+			System.out.println(filme);
+			request.setAttribute("filme", filme);
+			saida = "Filme.jsp";
+			break;
 		}
-		
+
 		RequestDispatcher view = request.getRequestDispatcher(saida);
 		view.forward(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
-	
-	private ArrayList<Integer> obterIds(HttpServletRequest request){
+
+	private ArrayList<Integer> obterIds(HttpServletRequest request) {
 		Enumeration<String> pars = request.getParameterNames();
 		ArrayList<Integer> listaIds = new ArrayList<>();
 		String par;
 		String[] vals = null;
-		
+
 		try {
 			while ((par = pars.nextElement()) != null) {
 				if (par.startsWith("box")) {
-					System.out.println(par +" = "+Arrays.toString(request.getParameterValues(par)));
+					System.out.println(par + " = " + Arrays.toString(request.getParameterValues(par)));
 					vals = request.getParameterValues(par);
 					if (vals != null && vals.length > 0 && vals[0].equals("on")) {
 						listaIds.add(Integer.parseInt(par.substring(3)));
 					}
 				}
 			}
-		} catch(NoSuchElementException nsee) {
+		} catch (NoSuchElementException nsee) {
 		}
 		return listaIds;
 	}
